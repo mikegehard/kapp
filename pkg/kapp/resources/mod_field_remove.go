@@ -58,7 +58,7 @@ func (t FieldRemoveMod) apply(obj interface{}, path Path) error {
 			}
 
 		case part.ArrayIndex != nil:
-			if isLast && part.RegexObj.Regex == nil {
+			if isLast && part.Regex.Regex == nil {
 				return fmt.Errorf("Expected last part of the path to be map key")
 			}
 
@@ -92,7 +92,7 @@ func (t FieldRemoveMod) apply(obj interface{}, path Path) error {
 			default:
 				panic(fmt.Sprintf("Unknown array index: %#v", part.ArrayIndex))
 			}
-		case part.RegexObj.Regex != nil:
+		case part.Regex != nil && part.Regex.Regex != nil:
 			matchedKeys, err := t.obtainMatchingRegexKeys(obj, part)
 			if err != nil {
 				return err
@@ -116,7 +116,7 @@ func (t FieldRemoveMod) apply(obj interface{}, path Path) error {
 
 func (t FieldRemoveMod) obtainMatchingRegexKeys(obj interface{}, part *PathPart) ([]string, error) {
 	var matchedKeys []string
-	regex, err := regexp.Compile(*part.RegexObj.Regex)
+	regex, err := regexp.Compile(*part.Regex.Regex)
 	if err != nil {
 		return matchedKeys, err
 	}
